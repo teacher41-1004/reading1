@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brothers and Sisters – Reading Game</title>
+<style>
+:root{color-scheme:light;--roof:#c8553d;--wall:#f4a259;--teal:#2a7f7f;--ink:#2b2d42;--soft:#fff6ec;--line:#f0dcc6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:#fff;color:var(--ink);font-family:Georgia,'Times New Roman',serif}
+button,input{font-family:inherit}
+#app{display:flex;height:100%}
+#read{flex:0 0 75%;display:flex;flex-direction:column;border-right:3px solid var(--line);min-width:0}
+#title{text-align:center;margin:0;padding:12px 34px;border-bottom:2px solid var(--line);color:var(--roof);font-size:20px;letter-spacing:.04em}
+#nav{display:flex;gap:8px;align-items:center;padding:10px 18px;border-bottom:2px solid var(--line);background:#fff}
+#nav .logo{display:flex;align-items:center;gap:6px;font-weight:bold;color:var(--roof);margin-right:auto}
+#nav button{border:2px solid var(--teal);background:#fff;color:var(--teal);border-radius:999px;padding:5px 14px;font-size:14px;cursor:pointer}
+#nav button:hover,#nav button.on{background:var(--teal);color:#fff}
+#text{flex:1;overflow-y:auto;padding:22px 34px 80px;line-height:1.75;font-size:18px;scroll-behavior:smooth}
+#text h2{color:var(--roof);letter-spacing:.04em;margin:.2em 0 .5em}
+#text h3{color:var(--teal);margin:1.6em 0 .3em;border-bottom:2px dashed var(--line);padding-bottom:4px}
+#text p{margin:.7em 0}
+mark.ev{background:#ffe27a;padding:2px 3px;border-radius:4px;box-shadow:0 0 0 2px #f4c430}
+#side{flex:0 0 25%;display:flex;flex-direction:column;padding:16px;gap:12px;overflow-y:auto;background:#fff;min-width:0}
+.roof{height:0;border-left:50% solid transparent}
+.card{background:var(--soft);border:3px solid var(--wall);border-radius:14px;padding:14px}
+.dots{display:flex;gap:5px;flex-wrap:wrap}
+.dots i{width:14px;height:14px;border-radius:4px 4px 2px 2px;background:#eadfd2;display:block}
+.dots i.cur{outline:2px solid var(--teal)}.dots i.ok{background:var(--teal)}.dots i.no{background:var(--roof)}
+.q{font-size:17px;line-height:1.5}
+.part{font-size:14px;line-height:1.5}.part b{color:var(--teal)}.num{color:var(--roof);font-size:20px}
+#text p.c{font-size:1.17em}
+.hint{font-size:13px;color:#7a6a58;margin-top:6px}
+input[type=text]{width:100%;padding:10px;border:2px solid var(--wall);border-radius:10px;font-size:17px;background:#fff}
+input[type=text]:disabled{background:#f7f2ec}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-size:15px;cursor:pointer;color:#fff;background:var(--teal);width:100%}
+.btn.alt{background:var(--wall);color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.fb{border-radius:10px;padding:10px;font-size:15px;line-height:1.5}
+.fb.ok{background:#e3f4ef;border:2px solid var(--teal)}.fb.no{background:#fde8e3;border:2px solid var(--roof)}
+.note{font-size:13px;color:#5a4a3a;margin-top:6px}
+.row{display:flex;gap:8px}
+h1.t{font-size:20px;margin:0;color:var(--roof)}
+ol.rev{padding-left:20px;font-size:14px;line-height:1.6}
+@media(max-width:760px){#app{flex-direction:column}#read{flex:1 1 55%;border-right:0;border-bottom:3px solid var(--line)}#side{flex:1 1 45%}#text{padding:14px 16px 60px;font-size:16px}}
+.tbox{display:flex;gap:8px;align-items:center;padding:8px 10px}.tbox span{font-weight:bold;min-width:56px}.tbox .btn{width:auto;flex:1;padding:8px}
+input[type=text],input[type=text]:disabled{color:#000;-webkit-text-fill-color:#000;opacity:1;font-weight:bold}
+html,body,button,input,#text,#text *,#side,#side *{font-size:16px!important}
+#title{font-size:20px!important}
+.sum{position:relative;max-height:42vh;overflow-y:auto}.sum p{margin:.5em 0;line-height:1.6}.blank{background:#ffe27a;border-radius:4px;padding:0 3px}.fill{border-bottom:2px solid;padding:0 2px}.fill.ok{color:#2a7f7f}.fill.no{color:#c8553d}
+</style>
+</head>
+<body>
+<div id="app">
+ <section id="read">
+  <h1 id="title">BROTHERS AND SISTERS</h1>
+  <div id="text"></div>
+ </section>
+ <aside id="side"></aside>
+</div>
+<script>
+var R=[
+{id:"art",t:"p",x:"We see them every morning. We eat with them every evening. We sometimes even share our bedrooms with them. They're our very best friends and, from time to time, our worst enemies."},
+{id:"art",t:"p",x:"Very few people would claim that they never fight with their brothers or sisters. However, according to research, this sometimes difficult relationship can actually be good for you."},
+{id:"art",t:"p",x:"When brothers and sisters quarrel with each other, they practise social skills that are useful in adult life. They learn to understand their own feelings and they become more aware of other people's feelings. The youngest child benefits even more. They develop better language skills compared to other children for their age, without older brothers or sisters. Lastly, brothers and sisters are naturally competitive in everything they do. This competition often encourages them to try harder, whether they're doing sport or schoolwork."},
+{id:"art",t:"p",x:"What are your experiences with your brothers and sisters? What do you think you've learned from them?"},
+{id:"cm",t:"h2",x:"COMMENTS (3)"},
+{id:"adam",t:"h3",x:"ADAM"},
+{id:"adam",t:"p",x:"I remember being quite mean to my youngest brother. We picked on him all the time because we were so much older than him. For instance, he used to get terrified while watching horror films. One day, while we were watching one, my other brother and I quietly left the room. Soon the film got slightly scary, and he suddenly realised he was all on his own. We'd both gone. He started screaming like a baby!"},
+{id:"adam",t:"p",x:"As the eldest child of three, I think I'm good at identifying with children younger than me. It's also made me more patient with younger kids at school — which means I tend to make a lot of friends."},
+{id:"sara",t:"h3",x:"SARA"},
+{id:"sara",t:"p",x:"My brother takes after my dad in that he has always been good at fixing things. One day (I was 11, he was 13), my parents were really impressed when he fixed the brakes on his bike himself. The next day, I was riding my bike down a steep hill near our house. Once I reached the bottom, I found out how he'd done it. He'd taken the brakes off my bike! Fortunately, I just managed to stop without injuring myself, but I learned something from that day — I always check my bike before I use it!"},
+{id:"lucy",t:"h3",x:"LUCY"},
+{id:"lucy",t:"p",x:"When I was four, my sisters and I had very little money. I can't imagine I really understood what it was. But sometimes we used to get a few coins from relatives, like our grandparents. My eldest sister was 11 and she used to talk me into swapping my old, dirty coins for her new, shiny ones. What I didn't realise, of course, was that the coins she was giving me were worth less than the ones that I was giving her! I learned two things: how to count and never to depend on my eldest sister's honesty!"}
+];
+var SUMT="Sibling Relationships and Their Lessons";
+var SUMP=["Although siblings may be both close companions and sources of conflict, research suggests that their relationship can support personal development. Disagreements help children practise social skills and become more {6} of others’ emotions. Younger siblings may also develop stronger language skills, while competition can motivate children to make greater efforts.",
+"The comments illustrate how difficult experiences with siblings can lead to learning. Adam recalls frightening his youngest brother, but believes that being the eldest has also made him more {7} with younger children. Sara’s parents were {8} by her brother’s ability to repair his bicycle, unaware that he had used parts from hers. After nearly being injured, Sara learned to check her own bicycle before riding it.",
+"Lucy describes being persuaded into {9} her old coins for brighter ones of lower value. This experience taught her to count and to question her sister’s {10}. Together, these accounts show that sibling relationships can develop social understanding and teach practical lessons, even through unpleasant experiences."];
+var Q=[
+{s:"art",q:"What do children practise when they argue with their siblings?",a:"social skills",ev:["When brothers and sisters quarrel with each other, they practise social skills that are useful in adult life."]},
+{s:"art",q:"What type of skills develop more strongly in children who have older siblings?",a:"language skills",ev:["They develop better language skills compared to other children for their age, without older brothers or sisters."]},
+{s:"adam",q:"What type of films frightened Adam’s youngest brother?",a:"horror films",ev:["For instance, he used to get terrified while watching horror films."]},
+{s:"sara",q:"What parts did Sara’s brother remove from her bicycle?",a:"brakes",ev:["He'd taken the brakes off my bike!"]},
+{s:"lucy",q:"What quality did Lucy learn not to depend on in her eldest sister?",a:"honesty",ev:["I learned two things: how to count and never to depend on my eldest sister's honesty!"]},
+{s:"art",a:"aware",ev:["They learn to understand their own feelings and they become more aware of other people's feelings."]},
+{s:"adam",a:"patient",ev:["It's also made me more patient with younger kids at school — which means I tend to make a lot of friends."]},
+{s:"sara",a:"impressed",ev:["One day (I was 11, he was 13), my parents were really impressed when he fixed the brakes on his bike himself."]},
+{s:"lucy",a:"swapping",ev:["My eldest sister was 11 and she used to talk me into swapping my old, dirty coins for her new, shiny ones."]},
+{s:"lucy",a:"honesty",ev:["I learned two things: how to count and never to depend on my eldest sister's honesty!"]}
+];
+function sumBox(n){return '<div class="card sum"><b>'+SUMT+'</b>'+SUMP.map(function(p){return '<p>'+p.replace(/\{(\d+)\}/g,function(m,d){return d==n?'<b class="blank">('+d+') __________</b>':(res[d-1]!==undefined?'<b class="fill '+(res[d-1]?'ok':'no')+'">('+d+') '+Q[d-1].a+'</b>':'('+d+') __________')})+'</p>'}).join('')+'</div>'}
+var T=document.getElementById('text'),S=document.getElementById('side');
+var i=-1,res=[],ev=[],checked=false;
+function renderText(marks){
+ T.innerHTML=R.map(function(r){var x=r.x;
+  (marks||[]).forEach(function(m){x=x.replace(m,'\u0001'+m+'\u0002')});
+  x=x.replace(/\u0001/g,'<mark class="ev">').replace(/\u0002/g,'</mark>');
+  var tag=r.t;var id=(tag!=='p')?' id="s-'+r.id+'"':'';var cl=(tag==='p'&&r.id!=='art')?' class="c"':'';
+  return '<'+tag+id+cl+'>'+x+'</'+tag+'>'}).join('');
+}
+function go(id){if(id==='art'){T.scrollTo({top:0,behavior:'smooth'})}else{var el=document.getElementById('s-'+id);if(el)T.scrollTo({top:el.offsetTop-T.offsetTop-10,behavior:'smooth'})}
+ document.querySelectorAll('#nav [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===id)})}
+document.querySelectorAll('#nav [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+var sec=0,tmr=null;
+function fmt(){var m=Math.floor(sec/60),s=sec%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
+function tick(){sec++;var e=document.getElementById('tm');if(e)e.textContent=fmt()}
+function sync(){var a=document.getElementById('tst'),b=document.getElementById('tpa');if(a)a.disabled=!!tmr;if(b)b.disabled=!tmr}
+function tStart(){if(!tmr)tmr=setInterval(tick,1000);sync()}
+function tPause(){clearInterval(tmr);tmr=null;sync()}
+function timerBox(){return '<div class="card tbox"><span id="tm">'+fmt()+'</span><button class="btn" id="tst">Start</button><button class="btn alt" id="tpa">Pause</button></div>'}
+function bindT(){document.getElementById('tst').onclick=tStart;document.getElementById('tpa').onclick=tPause;sync()}
+function partBox(k){var p=k<5?['Part 1: Short-answer Questions','Write NO MORE THAN TWO WORDS from the text for each answer.']:['Part 2: Summary Completion','Choose ONE WORD ONLY from the text for each answer.'];return '<div class="card part"><b>'+p[0]+'</b><br>'+p[1]+'</div>'}
+function dots(){return '<div class="dots">'+Q.map(function(_,k){return '<i class="'+(k===i?'cur ':'')+(res[k]===1?'ok':res[k]===0?'no':'')+'"></i>'}).join('')+'</div>'}
+function house(){return '<svg width="100%" height="46" viewBox="0 0 200 46"><g fill="none" stroke="#c8553d" stroke-width="3" stroke-linejoin="round"><path d="M10 28 30 8l20 20"/><path d="M80 28 100 8l20 20"/><path d="M150 28 170 8l20 20"/></g><g fill="#f4a259"><rect x="15" y="28" width="30" height="16"/><rect x="85" y="28" width="30" height="16"/><rect x="155" y="28" width="30" height="16"/></g></svg>'}
+function start(){
+ S.innerHTML=house()+'<div class="card part"><b>Part 1: Short-answer Questions</b></div><div class="card part"><b>Part 2: Summary Completion</b></div><button class="btn" id="go">Start</button>';
+ document.getElementById('go').onclick=function(){i=0;res=[];tPause();sec=0;show()};
+ renderText();go('art');
+}
+function show(){
+ checked=false;var q=Q[i];renderText();go(q.s);
+ S.innerHTML=timerBox()+partBox(i)+'<div class="card"><div class="q"><b class="num">'+(i+1)+'.</b> '+(i<5?q.q:'Complete blank ('+(i+1)+') in the summary.')+'</div></div>'+(i<5?'':sumBox(i+1))+'<input type="text" id="ans" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="type your answer…"><button class="btn" id="chk">Check</button><div id="out"></div>';
+ bindT();var sm=S.querySelector('.sum'),bl=S.querySelector('.blank');if(sm&&bl)sm.scrollTop=bl.offsetTop-20;var a=document.getElementById('ans');a.focus();
+ a.onkeydown=function(e){if(e.key==='Enter')check()};
+ document.getElementById('chk').onclick=check;
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function norm(s){return s.trim().replace(/\s+/g,' ').toLowerCase()}
+function check(){
+ if(checked)return;var a=document.getElementById('ans'),q=Q[i];
+ if(!a.value.trim()){a.focus();return}
+ checked=true;var ok=norm(a.value)===norm(q.a)||(q.alt||[]).map(norm).indexOf(norm(a.value))>-1;res[i]=ok?1:0;a.disabled=true;
+ 
+ document.getElementById('chk').style.display='none';
+ document.getElementById('out').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><b>'+(ok?'Correct!':'Wrong Answer')+'</b><br>Your answer: <b>'+esc(a.value.trim())+'</b><br>Answer: <b>'+q.a+(q.alt?' / '+q.alt[0]:'')+'</b></div><div class="row" style="margin-top:10px"><button class="btn alt" id="evb">Show Evidence</button><button class="btn" id="nx">'+(i<Q.length-1?'Next':'Selesai')+'</button></div>';
+ document.getElementById('evb').onclick=function(){renderText(Q[i].ev);var m=T.querySelector('mark.ev');if(m)T.scrollTo({top:m.offsetTop-T.offsetTop-80,behavior:'smooth'});this.disabled=true};
+ document.getElementById('nx').onclick=function(){if(i<Q.length-1){i++;show()}else end()};
+}
+function end(){
+ tPause();renderText();var n=res.filter(function(x){return x===1}).length;
+ S.innerHTML=house()+'<div class="card"><b style="font-size:20px">Score: '+n+' / '+Q.length+'</b><br>Time: '+fmt()+'<ol class="rev">'+Q.map(function(q,k){return '<li style="color:'+(res[k]?'#2a7f7f':'#c8553d')+'">'+q.a+'</li>'}).join('')+'</ol></div><button class="btn" id="again">Play again</button>';
+ document.getElementById('again').onclick=function(){i=0;res=[];tPause();sec=0;show()};
+}
+start();
+</script>
+</body>
+</html>
